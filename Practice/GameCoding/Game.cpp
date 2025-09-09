@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Game.h"
 
+
 Game::Game()
 {
 }
@@ -27,8 +28,16 @@ void Game::Init(HWND hwnd)
 	CreateSRV();
 }
 
-void Game::Update()
+void Game::Update(float deltaTime)
 {
+	float speed = 5.0f * deltaTime;
+
+	if (GetAsyncKeyState('W') & 0x8000) camera.MoveForward(speed);
+	if (GetAsyncKeyState('S') & 0x8000) camera.MoveForward(-speed);
+	if (GetAsyncKeyState('A') & 0x8000) camera.MoveRight(-speed);
+	if (GetAsyncKeyState('D') & 0x8000) camera.MoveRight(speed);
+	if (GetAsyncKeyState(VK_SPACE) & 0x8000) camera.MoveUp(speed);
+	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) camera.MoveUp(-speed);
 }
 
 void Game::Render()

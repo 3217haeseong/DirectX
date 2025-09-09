@@ -23,9 +23,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ int       nCmdShow)
 {
     
-
+    float deltaTime;
+    LARGE_INTEGER currentTime;
+    LARGE_INTEGER previousTime;
+    QueryPerformanceCounter(&currentTime);
+    previousTime = currentTime;
     // TODO: 여기에 코드를 입력합니다.
     // 1) 윈도우 창 정보 등록
+    LARGE_INTEGER frequency;
+    QueryPerformanceFrequency(&frequency);
+
+    float oneFrameTime = 1.0f / 60.0f;
+    
     MyRegisterClass(hInstance);
 
     // 2) 윈도우 창 생성
@@ -49,7 +58,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            game.Update();
+            QueryPerformanceCounter(&currentTime);
+
+            float deltaTime = (currentTime.QuadPart - previousTime.QuadPart) /
+                (float)frequency.QuadPart;
+
+            game.Update(deltaTime);
             game.Render();
         }
     }

@@ -50,6 +50,7 @@
     <ClInclude Include="Game.h">
       <Filter>소스 파일\01.Main</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -73,6 +74,9 @@
     </ClCompile>
     <ClCompile Include="Game.cpp">
       <Filter>소스 파일\01.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

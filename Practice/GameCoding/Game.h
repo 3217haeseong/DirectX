@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include "Camera.h"
+
 class Game
 {
 public:
@@ -8,7 +10,7 @@ public:
 
 public:
 	void Init(HWND hwnd);
-	void Update();
+	void Update(float deltaTime);
 	void Render();
 
 private:
@@ -76,6 +78,9 @@ private:
 
 	// SRV
 	ComPtr<ID3D11ShaderResourceView> _shaderResourceView = nullptr;
+	
+	// Ä«¸Þ¶ó
+	Camera camera;
 
 };
 
