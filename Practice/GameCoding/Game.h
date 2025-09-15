@@ -47,6 +47,8 @@ private:
 	uint32 _height = 0;
 
 private:
+	TransformData _transformData;
+
 	// DX
 	ComPtr<ID3D11Device> _device= nullptr;
 	ComPtr<ID3D11DeviceContext> _deviceContext =nullptr;
@@ -68,9 +70,12 @@ private:
 	vector<uint32> _indices;
 	ComPtr<ID3D11Buffer> _indexBuffer = nullptr;
 
+
 	// VS
 	ComPtr<ID3D11VertexShader> _vertexShader = nullptr;
 	ComPtr<ID3DBlob> _vsBlob = nullptr;
+	TransformData _tarnsformData;
+	ComPtr<ID3D11Buffer> _constantBuffer;
 	
 	// PS
 	ComPtr<ID3D11PixelShader> _pixelShader = nullptr;
@@ -80,7 +85,7 @@ private:
 	ComPtr<ID3D11ShaderResourceView> _shaderResourceView = nullptr;
 	
 	// Ä«¸Þ¶ó
-	Camera camera;
+
 
 };
 

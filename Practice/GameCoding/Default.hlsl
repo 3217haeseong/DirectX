@@ -12,11 +12,16 @@ struct VS_OUTPUT
     float2 uv : TEXCOORD;
 };
 
+cbuffer TransfromData : register(b0)
+{
+    float4 offset;
+}
+
 // IA - VS - RS - PS - OM
 VS_OUTPUT VS(VS_INPUT input)
 {
     VS_OUTPUT output;
-    output.position = input.position;
+    output.position = input.position + offset;
     output.uv = input.uv;
     
     return output;
@@ -24,7 +29,8 @@ VS_OUTPUT VS(VS_INPUT input)
 
 Texture2D texture0 : register(t0);
 SamplerState sampler0 : register(s0);
- 
+
+
 float4 PS(VS_OUTPUT input) : SV_Target
 { 
     // Sample함수를 활용 input.uv 값에 따라서 색상을 추출.

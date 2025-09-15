@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Game.h"
 
-
 Game::Game()
 {
 }
@@ -30,14 +29,26 @@ void Game::Init(HWND hwnd)
 
 void Game::Update(float deltaTime)
 {
-	float speed = 5.0f * deltaTime;
+	/*_transformData.offset.x += 1.f * deltaTime;
+	_transformData.offset.y += 1.f * deltaTime;*/
+	float moveSpeed=0.01f;
 
-	if (GetAsyncKeyState('W') & 0x8000) camera.MoveForward(speed);
-	if (GetAsyncKeyState('S') & 0x8000) camera.MoveForward(-speed);
-	if (GetAsyncKeyState('A') & 0x8000) camera.MoveRight(-speed);
-	if (GetAsyncKeyState('D') & 0x8000) camera.MoveRight(speed);
-	if (GetAsyncKeyState(VK_SPACE) & 0x8000) camera.MoveUp(speed);
-	if (GetAsyncKeyState(VK_CONTROL) & 0x8000) camera.MoveUp(-speed);
+	if (GetAsyncKeyState('W') & 0x8000)
+		_transformData.offset.y -= 1.f * deltaTime * moveSpeed;
+	if (GetAsyncKeyState('S') & 0x8000)
+		_transformData.offset.y += 1.f * deltaTime* moveSpeed;
+	if (GetAsyncKeyState('D') & 0x8000)
+		_transformData.offset.x += 1.f * deltaTime* moveSpeed;
+	if (GetAsyncKeyState('A') & 0x8000)
+		_transformData.offset.x -= 1.f * deltaTime* moveSpeed;
+
+
+	D3D11_MAPPED_SUBRESOURCE subResource;
+	ZeroMemory(&subResource, sizeof(subResource));
+
+	_deviceContext->Map(_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subResource);
+	::memcpy(subResource.pData, &_transformData, sizeof(_transformData));
+	_deviceContext->Unmap(_constantBuffer.Get(), 0);
 }
 
 void Game::Render()
@@ -57,6 +68,8 @@ void Game::Render()
 
 		// VS
 		_deviceContext->VSSetShader(_vertexShader.Get(), nullptr, 0);
+		_deviceContext->VSSetShader(_vertexShader.Get(), nullptr, 0);
+		_deviceContext->VSSetConstantBuffers(0, 1, _constantBuffer.GetAddressOf());
 
 		// RS
 
@@ -67,6 +80,8 @@ void Game::Render()
 		//_deviceContext->Draw(_vertices.size(), 0);
 		_deviceContext->DrawIndexed(_indices.size(),0 , 0);
 		_deviceContext->PSSetShaderResources(0, 1, _shaderResourceView.GetAddressOf());
+
+		
 	}
 
 	RenderEnd();
@@ -208,6 +223,19 @@ void Game::CreateGeometry()
 		data.pSysMem = _indices.data();
 
 		HRESULT hr = _device->CreateBuffer(&desc, &data, _indexBuffer.GetAddressOf());
+		CHECK(hr);
+	}
+
+	// ConstantBuffer
+	{
+		D3D11_BUFFER_DESC desc;
+		ZeroMemory(&desc, sizeof(desc));
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.ByteWidth = sizeof(TransformData);
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+		HRESULT hr = _device->CreateBuffer(&desc, nullptr, _constantBuffer.GetAddressOf());
 		CHECK(hr);
 	}
 	
